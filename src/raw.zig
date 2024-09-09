@@ -4,11 +4,13 @@ const slog = sokol.log;
 const sg = sokol.gfx;
 const sapp = sokol.app;
 const sglue = sokol.glue;
-const shd = @import("shaders/quad.glsl.zig");
+const shd = @import("shaders/circle.glsl.zig");
 
 const state = struct {
     var bind: sg.Bindings = .{};
     var pip: sg.Pipeline = .{};
+    var vsParams: shd.VsParams = .{ .aspectRatio = 0.5 };
+    var fsParams: shd.FsParams = .{ .offset = .{ 0, 0, 0 } };
     var pass_action: sg.PassAction = .{};
     var index_count: u16 = 0;
 };
@@ -71,7 +73,7 @@ export fn init() void {
     // a shader and pipeline state object
     var pip_desc: sg.PipelineDesc = .{
         .index_type = .UINT16,
-        .shader = sg.makeShader(shd.quadShaderDesc(sg.queryBackend())),
+        .shader = sg.makeShader(shd.circleShaderDesc(sg.queryBackend())),
     };
     pip_desc.layout.attrs[shd.ATTR_vs_position].format = .FLOAT3;
     pip_desc.layout.attrs[shd.ATTR_vs_color0].format = .FLOAT4;
@@ -85,8 +87,13 @@ export fn init() void {
 }
 
 export fn frame() void {
+    state.vsParams.aspectRatio = sapp.heightf() / sapp.widthf();
+
     sg.beginPass(.{ .action = state.pass_action, .swapchain = sglue.swapchain() });
     sg.applyPipeline(state.pip);
+    state.fsParams.offset[0] = 255.0;
+    // sg.applyUniforms(.FS, shd.SLOT_fs_params, sg.asRange(&state.fsParams)); TODO: use when needed frag shader.
+    sg.applyUniforms(.VS, shd.SLOT_vs_params, sg.asRange(&state.vsParams));
     sg.applyBindings(state.bind);
     sg.draw(0, state.index_count, 1);
     sg.endPass();
@@ -105,7 +112,7 @@ pub fn main() void {
         .width = 500,
         .height = 500,
         .icon = .{ .sokol_default = true },
-        .window_title = "quad.zig",
+        .window_title = "circle.zig",
         .logger = .{ .func = slog.func },
     });
 }
