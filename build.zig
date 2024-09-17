@@ -25,7 +25,7 @@ fn buildNative(b: *Build, target: Build.ResolvedTarget, optimize: OptimizeMode, 
         .name = "raw",
         .target = target,
         .optimize = optimize,
-        .root_source_file = b.path("src/raw.zig"),
+        .root_source_file = b.path("src/main.zig"),
     });
     raw.root_module.addImport("sokol", dep_sokol.module("sokol"));
     b.installArtifact(raw);
@@ -39,7 +39,7 @@ fn buildWeb(b: *Build, target: Build.ResolvedTarget, optimize: OptimizeMode, dep
         .name = "raw",
         .target = target,
         .optimize = optimize,
-        .root_source_file = b.path("src/raw.zig"),
+        .root_source_file = b.path("src/main.zig"),
     });
     raw.root_module.addImport("sokol", dep_sokol.module("sokol"));
 
@@ -54,7 +54,7 @@ fn buildWeb(b: *Build, target: Build.ResolvedTarget, optimize: OptimizeMode, dep
         .use_emmalloc = true,
         .use_filesystem = false,
         .shell_file_path = dep_sokol.path("src/sokol/web/shell.html"),
-        .extra_args = &.{"-sUSE_OFFSET_CONVERTER=1"},
+        .extra_args = &.{ "-sUSE_OFFSET_CONVERTER=1", "-sASSERTIONS=1" },
     });
     // ...and a special run step to start the web build output via 'emrun'
     const run = sokol.emRunStep(b, .{ .name = "raw", .emsdk = emsdk });

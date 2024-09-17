@@ -5,6 +5,7 @@ const sg = sokol.gfx;
 const sapp = sokol.app;
 const sglue = sokol.glue;
 const shd = @import("shaders/circle.glsl.zig");
+const shape = sokol.shape;
 
 const state = struct {
     var bind: sg.Bindings = .{};
@@ -104,15 +105,15 @@ export fn cleanup() void {
     sg.shutdown();
 }
 
-pub fn main() void {
-    sapp.run(.{
-        .init_cb = init,
-        .frame_cb = frame,
-        .cleanup_cb = cleanup,
-        .width = 500,
-        .height = 500,
-        .icon = .{ .sokol_default = true },
-        .window_title = "circle.zig",
-        .logger = .{ .func = slog.func },
-    });
-}
+// pub fn main() void {
+//     sapp.run(.{
+//         .init_cb = init,
+//         .frame_cb = frame,
+//         .cleanup_cb = cleanup,
+//         .width = 500,
+//         .height = 500,
+//         .icon = .{ .sokol_default = true },
+//         .window_title = "circle.zig",
+//         .logger = .{ .func = slog.func },
+//     });
+// }
