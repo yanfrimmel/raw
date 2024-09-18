@@ -54,7 +54,7 @@ fn buildWeb(b: *Build, target: Build.ResolvedTarget, optimize: OptimizeMode, dep
         .use_emmalloc = true,
         .use_filesystem = false,
         .shell_file_path = dep_sokol.path("src/sokol/web/shell.html"),
-        .extra_args = &.{ "-sUSE_OFFSET_CONVERTER=1", "-sASSERTIONS=1" },
+        .extra_args = &.{ "-sUSE_OFFSET_CONVERTER=1", "-sASSERTIONS=1", "-sSTACK_SIZE=512KB" },
     });
     // ...and a special run step to start the web build output via 'emrun'
     const run = sokol.emRunStep(b, .{ .name = "raw", .emsdk = emsdk });
